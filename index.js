@@ -1,87 +1,123 @@
-function orden() {
-    alert("Bienvenidos a GAMBOA, bar de vinos y pastas");
+
+const menucomida = [
+    {id: 1, nombre: "Carne c/ guarnición", precio: 5000},
+    {id: 2, nombre: "Pastas", precio: 3400},
+    {id: 3, nombre: "Ensalada completa", precio: 3000}
+]
+let comida  = [];
+let pedido = [];
+let trueOrFalse = true;
+
+class MenuC {
+    constructor({ id, nombre, precio}){
+        this.id= id;
+        this.nombre = nombre; 
+        this.precio = precio;
+    }
 }
+function pushProductos() {
+    for (const elemento of menucomida) {
+        comida.push(new MenuC(elemento));
+        console.log(comida);
+    }
+}
+pushProductos();
 
-function pedido() {
-    const hacerpedido = prompt("¿Quieres realizar un pedido? S/N").toUpperCase();
-    if (hacerpedido === "S") {
-        const solicitud = prompt("¿Qué desea pedir? \n 1-Comida \n 2-Bebida \n 3-Postre").toLowerCase();
-        let comida = "";
-        let bebida = "";
-        let postre = "";
+function initProgram() {
+    while (trueOrFalse) {
+      let selectSection = parseInt(
+        prompt(
+          "Bienvenidos a GAMBOA, ¿Qué quieres hacer? \n 1. Ver menu \n 2. Buscar una comida \n 3. Hacer un pedido \n 4. Salir \n" 
+          )
+      );
+  
+      switch (selectSection) {
+        case 1:
+          verProductos();
+          break;
+        case 2:
+            buscarUnProducto();
+          break;
+        case 3:
+            comprarProducto();
+          break;
+        case 4:
+            trueOrFalse = false;
+            break;
+      }
+    }
+  }
 
-        if (solicitud === "1") {
-            comida = prompt("¿Qué desea para comer? \n 1-Pastas $3400 \n 2-Carne c/ guarnición $5000 \n 3-Ensalada completa $3000");
-        } else if (solicitud === "2") {
-            bebida = prompt("¿Qué desea para beber? \n 1-Gaseosa línea Coca $1200 \n 2-Agua sin gas $1000 \n 3-Agus saborizada $1100");
-        } else {
-            postre = prompt("¿Qué desea de postre? \n 1-Flan con dulce de leche $2100 \n 2-Bocha de helado $1000 \n 3-Ensalada de frutas $1500");
-        }
+  function verProductos() {
+    showProducts(comida, alert);
+    alert("Fin");
+    initProgram();
+  }
 
-        const solicitud2 = prompt("¿Desea pedir algo mas? S/N").toUpperCase();
-        if (solicitud2 === "S") {
-            const solicitud2 = prompt("¿Qué desea pedir? \n 1-Bebida \n 2-Postre");
-            if (solicitud2 === "1") {
-                bebida = prompt("¿Qué desea para beber? \n 1-Gaseosa línea Coca $1200 \n 2-Agua sin gas $1000 \n 3-Agua saborizada $1100");
-            } else {
-                postre = prompt("¿Qué desea de postre? \n 1-Flan con dulce de leche $2100 \n 2-Bocha de helado $1000 \n 3-Ensalada de frutas $1500");
-            }
-        }
+  function showProducts(arr, fn) {
+    for (const elemento of arr) {
+      fn(elemento.nombre);
+    }
+  }
+  
 
-        const solicitud3 = prompt("¿Desea pedir algo mas? S/N").toUpperCase();
-        if (solicitud3 === "S") {
-            const solicitud3 = prompt("¿Qué desea pedir? \n 1-Postre");
-            if (solicitud3 === "1") {
-                postre = prompt("¿Qué desea de postre? \n 1-Flan con dulce de leche $2100 \n 2-Bocha de helado $1000 \n 3-Ensalada de frutas $1500");
-            }
-        }
-
-        const pedido = `Pedido ordenado: ${pedidoordenado1(comida)}, ${pedidoordenado2(bebida)}, ${pedidoordenado3(postre)}`;
-        alert(pedido);
+  function buscarUnProducto() {
+    let comidaABuscar = prompt("Ingrese el nombre de la comida");
+    let comidaEncontrada = comida.find((elm) => {
+      return elm.nombre === comidaABuscar;
+    });
+    if (comidaEncontrada) {
+      alert(
+        comidaEncontrada.nombre +
+          " " +
+          comidaEncontrada.precio
+      );
     } else {
-        alert("Gracias por visitarnos!");
+      alert("La comida buscada no existe");
     }
-}
+  
+    console.log(comidaEncontrada);
+    initProgram();
+  }
+  
+  
+  
+  function comprarProducto() {
+    let comidaABuscar = prompt("Ingrese la comida del menu que desea pedir");
+    let comidaEncontrada = menucomida.some((elm) => {
+      return elm.nombre === comidaABuscar;
+    });
+    if (comidaEncontrada) {
+      alert("El producto existe");
+      addToCart(comidaABuscar);
+    } else {
+      alert("El producto no existe");
+    }
+  }
+  function addToCart(comidaABuscar) {
+    let producto = comida.find((elm) => {
+      return elm.nombre === comidaABuscar;
+    });
+    if (producto) {
+      pedido.push(producto);
+      let confirmar = prompt("Desea agregar otro producto? SI/NO").toUpperCase;
+      if (confirmar === "SI") {
+        comprarProducto();
+      } else {
+        sumarPrecioTotal();
+      }
+    }
+  }
+  
+  function sumarPrecioTotal() {
+    let precioTotal = menucomida.reduce(
+      (acumulador, producto) => acumulador + producto.precio,
+      0
+    );
+    alert("El precio total es " + precioTotal);
 
-function pedidoordenado1(opcion) {
-    switch (opcion) {
-        case "1":
-            return "Pastas";
-        case "2":
-            return "Carne c/ guarnición";
-        case "3":
-            return "Ensalada completa";
-        
-        default:
-            return "Sin pedido";
-    }
-}
-function pedidoordenado2(opcion) {
-    switch (opcion) {
-        case "1":
-            return "Gaseosa línea Coca";
-        case "2":
-            return "Agua sin gas";
-        case "3":
-            return "Agua saborizada";
-        
-        default:
-            return "Sin pedido";
-    }
-}
+    initProgram();
 
-function pedidoordenado3(opcion) {
-    switch (opcion) {
-        case "1":
-            return "Flan con dulce de leche";
-        case "2":
-            return "Bocha de helado";
-        case "3":
-            return "Agua saborizada";
-        
-        default:
-            return "Ensalada de frutas";
-    }
-}
-orden();
-pedido();
+  }
+
+  initProgram();
